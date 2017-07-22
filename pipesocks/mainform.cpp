@@ -41,7 +41,6 @@ MainForm::MainForm(QObject *rootObject,QObject *parent):QObject(parent) {
     connect(tap,SIGNAL(clicked()),this,SLOT(tapClicked()));
     connect(start,SIGNAL(clicked()),this,SLOT(startClicked()));
     connect(dump,SIGNAL(clicked()),this,SLOT(dumpClicked()));
-    connect(window,SIGNAL(closing(QQuickCloseEvent*)),this,SLOT(closing()));
     connect(window,SIGNAL(fileChosen(QUrl)),this,SLOT(fileChosen(QUrl)));
     connect(window,SIGNAL(windowStateChanged(Qt::WindowState)),this,SLOT(windowStateChanged(Qt::WindowState)));
     trayicon=new QSystemTrayIcon(this);
@@ -75,6 +74,16 @@ MainForm::MainForm(QObject *rootObject,QObject *parent):QObject(parent) {
         settings->clear();
     }
     QMetaObject::invokeMethod(remoteHost,"forceActiveFocus");
+}
+
+MainForm::~MainForm()
+{
+  if (server) {
+      server->close();
+      server->deleteLater();
+  }
+  trayicon->hide();
+  QGuiApplication::exit();
 }
 
 void MainForm::pumpClicked() {
@@ -174,15 +183,6 @@ void MainForm::dumpClicked() {
         Log::undump();
         dump->setProperty("text","Dump");
     }
-}
-
-void MainForm::closing() {
-    if (server) {
-        server->close();
-        server->deleteLater();
-    }
-    trayicon->hide();
-    QGuiApplication::exit();
 }
 
 void MainForm::ShowError() {

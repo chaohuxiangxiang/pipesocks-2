@@ -34,12 +34,15 @@ int main(int argc,char **argv) {
     QString Usage(QString("Usage: %1 [pump|pipe|tap] <arguments>\nArguments:\n-H Remote Host\n-P Remote Port\n-p Local Port\n-k Password\n").arg(QString(*argv)));
     if (argc==1) {
         printf("%s",Usage.toStdString().c_str());
+#ifdef Q_OS_OSX
+        QGuiApplication::setQuitOnLastWindowClosed(false);
+#endif
         QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
         QGuiApplication a(argc,argv);
         QQuickStyle::setStyle("Material");
         QQmlApplicationEngine engine;
         engine.load(QUrl(QLatin1String("qrc:/Main.qml")));
-        new MainForm(engine.rootObjects().value(0));
+        new MainForm(engine.rootObjects().value(0), &a);
         return a.exec();
     } else {
         QCoreApplication a(argc,argv);

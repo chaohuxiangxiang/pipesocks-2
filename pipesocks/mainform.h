@@ -32,6 +32,7 @@ class MainForm : public QObject {
     Q_OBJECT
 public:
     explicit MainForm(QObject *rootObject,QObject *parent = 0);
+    ~MainForm();
 private:
     QObject *window,*headerText,*pipesocks,*about,
             *pump,*pipe,*tap,*remoteHost,
@@ -47,7 +48,6 @@ private slots:
     void tapClicked();
     void startClicked();
     void dumpClicked();
-    void closing();
     void fileChosen(QUrl path);
     void windowStateChanged(Qt::WindowState state);
 };
