@@ -27,7 +27,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 class SecureSocket : public TcpSocket {
     Q_OBJECT
 public:
-    explicit SecureSocket(const QString &Password,bool passive,QObject *parent = 0);
+    explicit SecureSocket(const QString &Password,bool passive,QObject *parent  =  0);
 private:
     bool passive;
     QByteArray LocalPubKey,LocalPriKey,RemotePubKey,SecretKey;

@@ -19,21 +19,21 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "mainform.h"
 
 MainForm::MainForm(QObject *rootObject,QObject *parent):QObject(parent) {
-    window=rootObject;
-    headerText=window->findChild<QObject*>("headerText");
-    pipesocks=window->findChild<QObject*>("pipesocks");
-    about=window->findChild<QObject*>("about");
-    pump=pipesocks->findChild<QObject*>("pump");
-    pipe=pipesocks->findChild<QObject*>("pipe");
-    tap=pipesocks->findChild<QObject*>("tap");
-    remoteHost=pipesocks->findChild<QObject*>("remoteHost");
-    remotePort=pipesocks->findChild<QObject*>("remotePort");
-    localPort=pipesocks->findChild<QObject*>("localPort");
-    password=pipesocks->findChild<QObject*>("password");
-    start=pipesocks->findChild<QObject*>("start");
-    dump=pipesocks->findChild<QObject*>("dump");
-    info=about->findChild<QObject*>("info");
-    server=NULL;
+    window = rootObject;
+    headerText = window->findChild<QObject*>("headerText");
+    pipesocks = window->findChild<QObject*>("pipesocks");
+    about = window->findChild<QObject*>("about");
+    pump = pipesocks->findChild<QObject*>("pump");
+    pipe = pipesocks->findChild<QObject*>("pipe");
+    tap = pipesocks->findChild<QObject*>("tap");
+    remoteHost = pipesocks->findChild<QObject*>("remoteHost");
+    remotePort = pipesocks->findChild<QObject*>("remotePort");
+    localPort = pipesocks->findChild<QObject*>("localPort");
+    password = pipesocks->findChild<QObject*>("password");
+    start = pipesocks->findChild<QObject*>("start");
+    dump = pipesocks->findChild<QObject*>("dump");
+    info = about->findChild<QObject*>("info");
+    server = NULL;
     headerText->setProperty("text","pipesocks "+Version::GetHighestVersion());
     info->setProperty("text","pipesocks "+Version::GetHighestVersion()+"\nCopyright (C) 2017  yvbbrjdr\nIcon by Rena\nQt by The Qt Company Ltd.\nlibsodium by jedisct1\nLicensed by GPL v3");
     connect(pump,SIGNAL(clicked()),this,SLOT(pumpClicked()));
@@ -44,25 +44,25 @@ MainForm::MainForm(QObject *rootObject,QObject *parent):QObject(parent) {
     connect(window,SIGNAL(closing(QQuickCloseEvent*)),this,SLOT(closing()));
     connect(window,SIGNAL(fileChosen(QUrl)),this,SLOT(fileChosen(QUrl)));
     connect(window,SIGNAL(windowStateChanged(Qt::WindowState)),this,SLOT(windowStateChanged(Qt::WindowState)));
-    trayicon=new QSystemTrayIcon(this);
+    trayicon = new QSystemTrayIcon(this);
     trayicon->setIcon(QIcon(":/icons/win.ico"));
     trayicon->show();
     connect(trayicon,SIGNAL(activated(QSystemTrayIcon::ActivationReason)),window,SLOT(show()));
     connect(trayicon,SIGNAL(activated(QSystemTrayIcon::ActivationReason)),window,SLOT(requestActivate()));
-    if (QSysInfo::macVersion()==QSysInfo::MV_None) {
+    if(QSysInfo::macVersion() == QSysInfo::MV_None) {
         window->setProperty("color",QColor(48,48,48));
     }
-    settings=new QSettings("yvbbrjdr","pipesocks",this);
-    if (settings->contains("pipesocks/version")&&Version::CheckVersion(settings->value("pipesocks/version").toString())) {
+    settings = new QSettings("yvbbrjdr","pipesocks",this);
+    if(settings->contains("pipesocks/version")&&Version::CheckVersion(settings->value("pipesocks/version").toString())) {
         settings->beginGroup("default");
         QString type(settings->value("type").toString());
-        if (type=="pump") {
+        if(type == "pump") {
             pump->setProperty("checked",true);
             QMetaObject::invokeMethod(pump,"clicked");
-        } else if (type=="pipe") {
+        } else if(type == "pipe") {
             pipe->setProperty("checked",true);
             QMetaObject::invokeMethod(pipe,"clicked");
-        } else if (type=="tap") {
+        } else if(type == "tap") {
             tap->setProperty("checked",true);
             QMetaObject::invokeMethod(tap,"clicked");
         }
@@ -99,30 +99,30 @@ void MainForm::tapClicked() {
 }
 
 void MainForm::startClicked() {
-    if (start->property("text")=="Start") {
-        if (pump->property("checked").toBool()) {
-            if (localPort->property("text").toString()=="") {
+    if(start->property("text") == "Start") {
+        if(pump->property("checked").toBool()) {
+            if(localPort->property("text").toString() == "") {
                 ShowError();
                 return;
             }
-            server=new TcpServer(TcpServer::PumpServer,remoteHost->property("text").toString(),remotePort->property("text").toString().toUShort(),password->property("text").toString(),this);
-        } else if (pipe->property("checked").toBool()) {
-            if (remoteHost->property("text").toString()==""||remotePort->property("text").toString()==""||localPort->property("text").toString()=="") {
+            server = new TcpServer(TcpServer::PumpServer,remoteHost->property("text").toString(),remotePort->property("text").toString().toUShort(),password->property("text").toString(),this);
+        } else if(pipe->property("checked").toBool()) {
+            if(remoteHost->property("text").toString() == ""||remotePort->property("text").toString() == ""||localPort->property("text").toString() == "") {
                 ShowError();
                 return;
             }
-            server=new TcpServer(TcpServer::PipeServer,remoteHost->property("text").toString(),remotePort->property("text").toString().toUShort(),password->property("text").toString(),this);
-        } else if (tap->property("checked").toBool()) {
-            if (remoteHost->property("text").toString()==""||remotePort->property("text").toString()==""||localPort->property("text").toString()=="") {
+            server = new TcpServer(TcpServer::PipeServer,remoteHost->property("text").toString(),remotePort->property("text").toString().toUShort(),password->property("text").toString(),this);
+        } else if(tap->property("checked").toBool()) {
+            if(remoteHost->property("text").toString() == ""||remotePort->property("text").toString() == ""||localPort->property("text").toString() == "") {
                 ShowError();
                 return;
             }
-            server=new TcpServer(TcpServer::TapClient,remoteHost->property("text").toString(),remotePort->property("text").toString().toUShort(),password->property("text").toString(),this);
+            server = new TcpServer(TcpServer::TapClient,remoteHost->property("text").toString(),remotePort->property("text").toString().toUShort(),password->property("text").toString(),this);
         }
-        if (!server->listen(QHostAddress::Any,localPort->property("text").toString().toUInt())) {
+        if(!server->listen(QHostAddress::Any,localPort->property("text").toString().toUInt())) {
             QMetaObject::invokeMethod(window,"showFailedBind");
             server->deleteLater();
-            server=NULL;
+            server = NULL;
             return;
         }
         pump->setProperty("enabled",false);
@@ -136,11 +136,11 @@ void MainForm::startClicked() {
         headerText->setProperty("text","Enjoy!");
         settings->setValue("pipesocks/version",Version::GetHighestVersion());
         settings->beginGroup("default");
-        if (pump->property("checked").toBool()) {
+        if(pump->property("checked").toBool()) {
             settings->setValue("type","pump");
-        } else if (pipe->property("checked").toBool()) {
+        } else if(pipe->property("checked").toBool()) {
             settings->setValue("type","pipe");
-        } else if (tap->property("checked").toBool()) {
+        } else if(tap->property("checked").toBool()) {
             settings->setValue("type","tap");
         }
         settings->setValue("remotehost",remoteHost->property("text").toString());
@@ -148,18 +148,18 @@ void MainForm::startClicked() {
         settings->setValue("localport",localPort->property("text").toString());
         settings->setValue("password",password->property("text").toString());
         settings->endGroup();
-    } else if (start->property("text")=="Stop") {
+    } else if(start->property("text") == "Stop") {
         server->close();
         server->deleteLater();
-        server=NULL;
+        server = NULL;
         pump->setProperty("enabled",true);
         pipe->setProperty("enabled",true);
         tap->setProperty("enabled",true);
-        if (pump->property("checked").toBool()) {
+        if(pump->property("checked").toBool()) {
             pumpClicked();
-        } else if (pipe->property("checked").toBool()) {
+        } else if(pipe->property("checked").toBool()) {
             pipeClicked();
-        } else if (tap->property("checked").toBool()) {
+        } else if(tap->property("checked").toBool()) {
             tapClicked();
         }
         start->setProperty("text","Start");
@@ -168,16 +168,16 @@ void MainForm::startClicked() {
 }
 
 void MainForm::dumpClicked() {
-    if (dump->property("text")=="Dump") {
+    if(dump->property("text") == "Dump") {
         QMetaObject::invokeMethod(window,"showFileDialog");
-    } else if (dump->property("text")=="Undump") {
+    } else if(dump->property("text") == "Undump") {
         Log::undump();
         dump->setProperty("text","Dump");
     }
 }
 
 void MainForm::closing() {
-    if (server) {
+    if(server) {
         server->close();
         server->deleteLater();
     }
@@ -195,7 +195,7 @@ void MainForm::fileChosen(QUrl path) {
 }
 
 void MainForm::windowStateChanged(Qt::WindowState state) {
-    if (state==Qt::WindowMinimized&&QSysInfo::kernelType()!="linux") {
+    if(state == Qt::WindowMinimized&&QSysInfo::kernelType() != "linux") {
         QMetaObject::invokeMethod(window,"hide");
     }
 }

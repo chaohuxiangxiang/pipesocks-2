@@ -19,16 +19,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "pipe.h"
 
 Pipe::Pipe(qintptr handle,const QString &RemoteHost,unsigned short RemotePort,QObject *parent):QObject(parent) {
-    csock=new TcpSocket(this);
+    csock = new TcpSocket(this);
     connect(csock,SIGNAL(RecvData(QByteArray)),this,SLOT(ClientRecv(QByteArray)));
     connect(csock,SIGNAL(disconnected()),this,SLOT(EndSession()));
     csock->setSocketDescriptor(handle);
-    ssock=new TcpSocket(this);
+    ssock = new TcpSocket(this);
     connect(ssock,SIGNAL(RecvData(QByteArray)),this,SLOT(ServerRecv(QByteArray)));
     connect(ssock,SIGNAL(disconnected()),this,SLOT(EndSession()));
     ssock->connectToHost(RemoteHost,RemotePort);
-    CHost=csock->peerAddress();
-    CPort=csock->peerPort();
+    CHost = csock->peerAddress();
+    CPort = csock->peerPort();
     Log::log(csock,"connection established");
 }
 
@@ -41,15 +41,15 @@ void Pipe::ServerRecv(const QByteArray &Data) {
 }
 
 void Pipe::EndSession() {
-    if (csock->state()==QAbstractSocket::ConnectedState) {
+    if (csock->state() == QAbstractSocket::ConnectedState) {
         Log::log(CHost.toString().mid(7)+':'+QString::number(CPort)+" server closed the connection");
     }
-    if (ssock->state()==QAbstractSocket::ConnectedState) {
+    if (ssock->state() == QAbstractSocket::ConnectedState) {
         Log::log(CHost.toString().mid(7)+':'+QString::number(CPort)+" client closed the connection");
     }
     csock->disconnectFromHost();
     ssock->disconnectFromHost();
-    if (ssock->state()==QAbstractSocket::UnconnectedState&&csock->state()==QAbstractSocket::UnconnectedState) {
+    if (ssock->state() == QAbstractSocket::UnconnectedState&&csock->state() == QAbstractSocket::UnconnectedState) {
         deleteLater();
     }
 }

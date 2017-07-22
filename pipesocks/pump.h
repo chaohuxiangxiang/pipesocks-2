@@ -33,7 +33,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 class Pump : public QObject {
     Q_OBJECT
 public:
-    explicit Pump(qintptr handle,const QString &Password,QObject *parent = 0);
+    explicit Pump(qintptr handle,const QString &Password,QObject *parent  =  0);
 private:
     enum Status {
         Initiated,

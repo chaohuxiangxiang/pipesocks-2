@@ -19,17 +19,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "tcpserver.h"
 
 TcpServer::TcpServer(Mode mode,const QString &RemoteHost,unsigned short RemotePort,const QString &Password,QObject *parent):QTcpServer(parent),mode(mode),RemoteHost(RemoteHost),RemotePort(RemotePort),Password(Password) {
-    if (mode==TapClient)
-        gfwlist=new GFWList(this);
+    if(mode == TapClient)
+        gfwlist = new GFWList(this);
     else
-        gfwlist=NULL;
+        gfwlist = NULL;
     setProxy(QNetworkProxy::NoProxy);
 }
 
 void TcpServer::incomingConnection(qintptr handle) {
-    if (mode==PumpServer) {
+    if(mode == PumpServer) {
         new Pump(handle,Password,this);
-    } else if (mode==PipeServer) {
+    } else if(mode == PipeServer) {
         new Pipe(handle,RemoteHost,RemotePort,this);
     } else {
         new Tap(handle,RemoteHost,RemotePort,Password,gfwlist,this);

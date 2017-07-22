@@ -36,7 +36,7 @@ private:
     QString PAC;
     bool available,retrieving;
 public:
-    explicit GFWList(QObject *parent = 0);
+    explicit GFWList(QObject *parent  =  0);
     void RequestGFWList();
 signals:
     void RecvGFWList(const QString &GFWList);

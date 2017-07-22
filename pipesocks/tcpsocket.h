@@ -25,7 +25,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 class TcpSocket : public QTcpSocket {
     Q_OBJECT
 public:
-    explicit TcpSocket(QObject *parent = 0);
+    explicit TcpSocket(QObject *parent  =  0);
 signals:
     void SendData(const QByteArray &Data);
     void RecvData(const QByteArray &Data);

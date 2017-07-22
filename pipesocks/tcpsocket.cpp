@@ -25,7 +25,7 @@ TcpSocket::TcpSocket(QObject *parent):QTcpSocket(parent) {
 }
 
 void TcpSocket::SendDataSlot(const QByteArray &Data) {
-    if (state()==QAbstractSocket::UnconnectedState)
+    if(state() == QAbstractSocket::UnconnectedState)
         return;
     write(Data);
 }
