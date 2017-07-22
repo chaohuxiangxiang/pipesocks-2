@@ -27,10 +27,10 @@ UdpSocket::UdpSocket(QObject *parent):QUdpSocket(parent) {
 
 void UdpSocket::SendDataSlot(const QString &Host,unsigned short Port,const QByteArray &Data) {
     QHostAddress HostAddress(Host);
-    if(HostAddress.protocol() == QAbstractSocket::UnknownNetworkLayerProtocol) {
+    if (HostAddress.protocol()==QAbstractSocket::UnknownNetworkLayerProtocol) {
         QHostInfo qhi(QHostInfo::fromName(Host));
-        if(qhi.error() == QHostInfo::NoError) {
-            HostAddress = qhi.addresses().first();
+        if (qhi.error()==QHostInfo::NoError) {
+            HostAddress=qhi.addresses().first();
         } else {
             return;
         }

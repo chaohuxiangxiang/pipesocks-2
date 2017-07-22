@@ -19,15 +19,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "pump.h"
 
 Pump::Pump(qintptr handle,const QString &Password,QObject *parent):QObject(parent),Password(Password) {
-    csock = new SecureSocket(Password,true,this);
+    csock=new SecureSocket(Password,true,this);
     connect(csock,SIGNAL(RecvData(QByteArray)),this,SLOT(ClientRecv(QByteArray)));
     connect(csock,SIGNAL(disconnected()),this,SLOT(EndSession()));
     csock->setSocketDescriptor(handle);
-    ssock = NULL;
-    usock = NULL;
-    CHost = csock->peerAddress();
-    CPort = csock->peerPort();
-    status = Initiated;
+    ssock=NULL;
+    usock=NULL;
+    CHost=csock->peerAddress();
+    CPort=csock->peerPort();
+    status=Initiated;
     Log::log(csock,"connection established");
 }
 
@@ -35,24 +35,24 @@ void Pump::ClientRecv(const QByteArray &Data) {
     switch (status) {
         case Initiated: {
             QVariantMap qvm(QJsonDocument::fromJson(Data).toVariant().toMap()),qvm2;
-            if((!Version::CheckVersion(qvm["version"].toString()))||qvm["password"] != Password) {
+            if ((!Version::CheckVersion(qvm["version"].toString()))||qvm["password"]!=Password) {
                 qvm2.insert("status","no");
                 emit csock->SendData(QJsonDocument::fromVariant(qvm2).toJson());
                 csock->disconnectFromHost();
                 Log::log(csock,"was refused");
                 break;
             }
-            if(qvm["protocol"] == "TCP") {
-                ssock = new TcpSocket(this);
+            if (qvm["protocol"]=="TCP") {
+                ssock=new TcpSocket(this);
                 connect(ssock,SIGNAL(RecvData(QByteArray)),this,SLOT(ServerRecv(QByteArray)));
                 connect(ssock,SIGNAL(disconnected()),this,SLOT(EndSession()));
                 ssock->connectToHost(qvm["host"].toString(),qvm["port"].toUInt());
-                status = TCP;
+                status=TCP;
                 Log::log(csock,"requested TCP connection to "+qvm["host"].toString()+':'+QString::number(qvm["port"].toUInt()));
-            } else if(qvm["protocol"] == "UDP") {
-                usock = new UdpSocket(this);
+            } else if (qvm["protocol"]=="UDP") {
+                usock=new UdpSocket(this);
                 connect(usock,SIGNAL(RecvData(QHostAddress,unsigned short,QByteArray)),this,SLOT(UDPRecv(QHostAddress,unsigned short,QByteArray)));
-                status = UDP;
+                status=UDP;
                 Log::log(csock,"requested UDP association");
             }
             qvm2.insert("status","ok");
@@ -77,18 +77,18 @@ void Pump::ServerRecv(const QByteArray &Data) {
 }
 
 void Pump::EndSession() {
-    if(csock->state() == QAbstractSocket::ConnectedState) {
+    if (csock->state()==QAbstractSocket::ConnectedState) {
         Log::log(CHost.toString().mid(7)+':'+QString::number(CPort)+" server closed the connection");
     }
-    if(ssock) {
-        if(ssock->state() == QAbstractSocket::ConnectedState) {
+    if (ssock) {
+        if (ssock->state()==QAbstractSocket::ConnectedState) {
             Log::log(CHost.toString().mid(7)+':'+QString::number(CPort)+" client closed the connection");
         }
         ssock->disconnectFromHost();
     }
     csock->disconnectFromHost();
-    if(csock->state() == QAbstractSocket::UnconnectedState&&(ssock == NULL||ssock->state() == QAbstractSocket::UnconnectedState)) {
-        if(usock)
+    if (csock->state()==QAbstractSocket::UnconnectedState&&(ssock==NULL||ssock->state()==QAbstractSocket::UnconnectedState)) {
+        if (usock)
             usock->close();
         deleteLater();
     }

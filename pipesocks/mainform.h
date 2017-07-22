@@ -31,7 +31,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 class MainForm : public QObject {
     Q_OBJECT
 public:
-    explicit MainForm(QObject *rootObject,QObject *parent  =  0);
+    explicit MainForm(QObject *rootObject,QObject *parent = 0);
 private:
     QObject *window,*headerText,*pipesocks,*about,
             *pump,*pipe,*tap,*remoteHost,

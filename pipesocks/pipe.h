@@ -28,7 +28,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 class Pipe : public QObject {
     Q_OBJECT
 public:
-    explicit Pipe(qintptr handle,const QString &RemoteHost,unsigned short RemotePort,QObject *parent  =  0);
+    explicit Pipe(qintptr handle,const QString &RemoteHost,unsigned short RemotePort,QObject *parent = 0);
 private:
     TcpSocket *csock,*ssock;
     QHostAddress CHost;

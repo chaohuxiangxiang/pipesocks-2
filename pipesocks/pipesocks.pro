@@ -1,12 +1,12 @@
 # This project is created by yvbbrjdr
 
-QT  +=  core widgets qml quickcontrols2 network
+QT += core widgets qml quickcontrols2 network
 
-TARGET  =  pipesocks
+TARGET = pipesocks
 
-TEMPLATE  =  app
+TEMPLATE = app
 
-SOURCES  +=  main.cpp \
+SOURCES += main.cpp \
     tcpsocket.cpp \
     securesocket.cpp \
     tcpserver.cpp \
@@ -19,7 +19,7 @@ SOURCES  +=  main.cpp \
     log.cpp \
     mainform.cpp
 
-HEADERS  +=  tcpsocket.h \
+HEADERS += tcpsocket.h \
     securesocket.h \
     tcpserver.h \
     pipe.h \
@@ -32,13 +32,13 @@ HEADERS  +=  tcpsocket.h \
     mainform.h
 
 osx {
-    LIBS  +=  -L/usr/local/lib/
-    INCLUDEPATH  +=  /usr/local/include/
-    ICON  =  icons/osx.icns
+    LIBS += -L/usr/local/lib/
+    INCLUDEPATH += /usr/local/include/
+    ICON = icons/osx.icns
 }
 
-win32: RC_ICONS  =  icons/win.ico
+win32: RC_ICONS = icons/win.ico
 
-LIBS  +=  -lsodium
+LIBS += -lsodium
 
-RESOURCES  +=  qml.qrc
+RESOURCES += qml.qrc

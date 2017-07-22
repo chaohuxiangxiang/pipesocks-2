@@ -26,7 +26,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 class UdpSocket : public QUdpSocket {
     Q_OBJECT
 public:
-    explicit UdpSocket(QObject *parent  =  0);
+    explicit UdpSocket(QObject *parent = 0);
 signals:
     void SendData(const QString &Host,unsigned short Port,const QByteArray &Data);
     void RecvData(const QHostAddress &Host,unsigned short Port,const QByteArray &Data);

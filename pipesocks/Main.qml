@@ -38,11 +38,11 @@ ApplicationWindow {
     font.family: qsTr("Roboto")
 
     function showNotFilled() {
-        notFilled.visible = true
+        notFilled.visible=true
     }
 
     function showFailedBind() {
-        failedBind.visible = true
+        failedBind.visible=true
     }
 
     function showFileDialog() {
