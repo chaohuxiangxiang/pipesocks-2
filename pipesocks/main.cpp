@@ -23,17 +23,20 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "tcpserver.h"
 #include "mainform.h"
 
-QString FindArg(const QStringList &Arguments,char Letter) {
-    int index=Arguments.indexOf(QString('-')+Letter);
-    if (index!=-1&&index<Arguments.size()-1)
-        return Arguments.at(index+1);
+QString findArg(const QStringList &argList, char letter) {
+    int index = argList.indexOf(QString('-') + letter);
+    if(index != -1 && index < argList.size() - 1)
+        return argList.at(index + 1);
     return QString();
 }
 
-int main(int argc,char **argv) {
-    QString Usage(QString("Usage: %1 [pump|pipe|tap] <arguments>\nArguments:\n-H Remote Host\n-P Remote Port\n-p Local Port\n-k Password\n").arg(QString(*argv)));
-    if (argc==1) {
-        printf("%s",Usage.toStdString().c_str());
+int main(int argc, char **argv) {
+    QString usage(QString("Usage: %1 [pump|pipe|tap] <arguments>\nArguments:\n-H Remote Host\n-P Remote Port\n-p Local Port\n-k Password\n").arg(QString(*argv)));
+
+    if(argc == 1)
+      {
+        /// GUI
+        printf("%s",usage.toStdString().c_str());
 #ifdef Q_OS_OSX
         QGuiApplication::setQuitOnLastWindowClosed(false);
 #endif
@@ -44,39 +47,66 @@ int main(int argc,char **argv) {
         engine.load(QUrl(QLatin1String("qrc:/Main.qml")));
         new MainForm(engine.rootObjects().value(0), &a);
         return a.exec();
-    } else {
+      }
+    else
+      {
+        /// Command Line
         QCoreApplication a(argc,argv);
-        QStringList args=a.arguments();
-        QString type=args.at(1),RemoteHost=FindArg(args,'H'),Password=FindArg(args,'k');
-        unsigned short RemotePort=FindArg(args,'P').toUShort(),LocalPort=FindArg(args,'p').toUShort();
-        RemotePort=(RemotePort==0)?7473:RemotePort;
-        LocalPort=(LocalPort==0)?7473:LocalPort;
+        QStringList args = a.arguments();
+        QString type = args.at(1);
+        QString remoteHost = findArg(args, 'H');
+        QString password = findArg(args, 'k');
+        unsigned short remotePort = findArg(args, 'P').toUShort();
+        unsigned short localPort = findArg(args, 'p').toUShort();
+
+        remotePort = (remotePort == 0) ? 7473 : remotePort;
+        localPort = (localPort == 0) ? 7473 : localPort;
         TcpServer *server;
-        if (type=="pump") {
-            server=new TcpServer(TcpServer::PumpServer,RemoteHost,RemotePort,Password);
-            printf("Welcome to Pipesocks pump\nServer is listening at port %d\n",LocalPort);
-        } else if (type=="pipe") {
-            if (RemoteHost=="") {
-                printf("Remote Host required\n%s",Usage.toStdString().c_str());
-                return 1;
+
+        switch (type) {
+          case "pump":
+            {
+              server = new TcpServer(TcpServer::PumpServer,remoteHost,remotePort,password);
+              printf("Welcome to Pipesocks pump\nServer is listening at port %d\n",localPort);
+              break;
             }
-            server=new TcpServer(TcpServer::PipeServer,RemoteHost,RemotePort,Password);
-            printf("Welcome to Pipesocks pipe\nServer is listening at port %d and connects to %s:%d\n",LocalPort,RemoteHost.toStdString().c_str(),RemotePort);
-        } else if (type=="tap") {
-            if (RemoteHost=="") {
-                printf("Remote Host required\n%s",Usage.toStdString().c_str());
-                return 1;
+
+          case "pipe":
+            {
+              if(remoteHost == "")
+                {
+                  printf("Remote Host required\n%s",usage.toStdString().c_str());
+                  return 1;
+                }
+              server = new TcpServer(TcpServer::PipeServer,remoteHost,remotePort,password);
+              printf("Welcome to Pipesocks pipe\nServer is listening at port %d and connects to %s:%d\n",localPort,remoteHost.toStdString().c_str(),remotePort);
+              break;
             }
-            server=new TcpServer(TcpServer::TapClient,RemoteHost,RemotePort,Password);
-            printf("Welcome to Pipesocks tap\nServer is listening at port %d and connects to %s:%d\n",LocalPort,RemoteHost.toStdString().c_str(),RemotePort);
-        } else {
-            printf("%s",Usage.toStdString().c_str());
+
+          case "tap":
+            {
+              if(remoteHost == "")
+                {
+                  printf("Remote Host required\n%s",usage.toStdString().c_str());
+                  return 1;
+                }
+              server = new TcpServer(TcpServer::TapClient,remoteHost,remotePort,password);
+              printf("Welcome to Pipesocks tap\nServer is listening at port %d and connects to %s:%d\n",localPort,remoteHost.toStdString().c_str(),remotePort);
+              break;
+            }
+
+          default:
+            {
+              printf("%s",usage.toStdString().c_str());
+              return 1;
+            }
+          }
+
+        if(!server->listen(QHostAddress::Any,localPort))
+          {
+            printf("Failed to bind to port %d, exiting. . . \n",localPort);
             return 1;
-        }
-        if (!server->listen(QHostAddress::Any,LocalPort)) {
-            printf("Failed to bind to port %d, exiting. . . \n",LocalPort);
-            return 1;
-        }
+          }
         return a.exec();
     }
 }

@@ -20,10 +20,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 SecureSocket::SecureSocket(const QString &Password,bool passive,QObject *parent):TcpSocket(parent),passive(passive),LocalPubKey(crypto_box_PUBLICKEYBYTES,0),LocalPriKey(crypto_box_SECRETKEYBYTES,0) {
     connect(this,SIGNAL(stateChanged(QAbstractSocket::SocketState)),this,SLOT(StateChangedSlot(QAbstractSocket::SocketState)));
-    if (sodium_init()==-1)
+    if (sodium_init() == -1)
         QCoreApplication::exit(1);
     crypto_box_keypair((unsigned char*)LocalPubKey.data(),(unsigned char*)LocalPriKey.data());
-    if ((unsigned int)Password.size()>=crypto_secretbox_KEYBYTES)
+    if((unsigned int)Password.size()>=crypto_secretbox_KEYBYTES)
         SecretKey=Password.toLocal8Bit().left(crypto_secretbox_KEYBYTES);
     else
         SecretKey=Password.toLocal8Bit()+QByteArray(crypto_secretbox_KEYBYTES-Password.toLocal8Bit().size(),(char)0x98);
@@ -75,7 +75,7 @@ void SecureSocket::RecvDataSlot() {
         l=(l<<8)+(unsigned char)prefix[1];
         l=(l<<8)+(unsigned char)prefix[2];
         l=(l<<8)+(unsigned char)prefix[3];
-        if ((unsigned int)RecvBuffer.length()<l)
+        if((unsigned int)RecvBuffer.length()<l)
             return;
         QByteArray segment(RecvBuffer.left(l).mid(crypto_secretbox_MACBYTES+4+crypto_secretbox_NONCEBYTES));
         RecvBuffer=RecvBuffer.mid(l);

@@ -35,21 +35,21 @@ void Pump::ClientRecv(const QByteArray &Data) {
     switch (status) {
         case Initiated: {
             QVariantMap qvm(QJsonDocument::fromJson(Data).toVariant().toMap()),qvm2;
-            if ((!Version::CheckVersion(qvm["version"].toString()))||qvm["password"]!=Password) {
+            if((!Version::CheckVersion(qvm["version"].toString()))||qvm["password"]!=Password) {
                 qvm2.insert("status","no");
                 emit csock->SendData(QJsonDocument::fromVariant(qvm2).toJson());
                 csock->disconnectFromHost();
                 Log::log(csock,"was refused");
                 break;
             }
-            if (qvm["protocol"]=="TCP") {
+            if (qvm["protocol"] == "TCP") {
                 ssock=new TcpSocket(this);
                 connect(ssock,SIGNAL(RecvData(QByteArray)),this,SLOT(ServerRecv(QByteArray)));
                 connect(ssock,SIGNAL(disconnected()),this,SLOT(EndSession()));
                 ssock->connectToHost(qvm["host"].toString(),qvm["port"].toUInt());
                 status=TCP;
                 Log::log(csock,"requested TCP connection to "+qvm["host"].toString()+':'+QString::number(qvm["port"].toUInt()));
-            } else if (qvm["protocol"]=="UDP") {
+            } else if (qvm["protocol"] == "UDP") {
                 usock=new UdpSocket(this);
                 connect(usock,SIGNAL(RecvData(QHostAddress,unsigned short,QByteArray)),this,SLOT(UDPRecv(QHostAddress,unsigned short,QByteArray)));
                 status=UDP;

@@ -37,8 +37,8 @@ Tap::Tap(qintptr handle,const QString &RemoteHost,unsigned short RemotePort,cons
 void Tap::ClientRecv(const QByteArray &Data) {
     switch (status) {
         case Initiated: {
-            if (Data[0]=='G') {
-                if (Data.indexOf("gfwlist")==-1) {
+            if (Data[0] == 'G') {
+                if (Data.indexOf("gfwlist") == -1) {
                     emit csock->SendData(PAC());
                     csock->disconnectFromHost();
                     Log::log(csock,"requested global PAC");
@@ -61,7 +61,7 @@ void Tap::ClientRecv(const QByteArray &Data) {
                     break;
                 }
             }
-            if (!ok) {
+            if(!ok) {
                 emit csock->SendData(QByteArray::fromHex("05ff"));
                 csock->disconnectFromHost();
                 return;
@@ -107,11 +107,11 @@ void Tap::ServerRecv(const QByteArray &Data) {
             break;
         case Handshook: {
             QVariantMap qvm(QJsonDocument::fromJson(Data).toVariant().toMap());
-            if (qvm["status"]=="ok") {
-                if (qvm["protocol"]=="TCP") {
+            if (qvm["status"] == "ok") {
+                if (qvm["protocol"] == "TCP") {
                     emit csock->SendData(QByteArray::fromHex("05000001000000000000"));
                     status=CONNECT;
-                } else if (qvm["protocol"]=="UDP") {
+                } else if (qvm["protocol"] == "UDP") {
                     usock=new UdpSocket(this);
                     connect(usock,SIGNAL(RecvData(QHostAddress,unsigned short,QByteArray)),this,SLOT(UDPRecv(QHostAddress,unsigned short,QByteArray)));
                     emit csock->SendData(QByteArray::fromHex("050000")+toSOCKS5(csock->localAddress(),usock->localPort()));

@@ -108,27 +108,27 @@ void MainForm::tapClicked() {
 }
 
 void MainForm::startClicked() {
-    if (start->property("text")=="Start") {
+    if (start->property("text") == "Start") {
         if (pump->property("checked").toBool()) {
-            if (localPort->property("text").toString()=="") {
+            if (localPort->property("text").toString() == "") {
                 ShowError();
                 return;
             }
             server=new TcpServer(TcpServer::PumpServer,remoteHost->property("text").toString(),remotePort->property("text").toString().toUShort(),password->property("text").toString(),this);
         } else if (pipe->property("checked").toBool()) {
-            if (remoteHost->property("text").toString()==""||remotePort->property("text").toString()==""||localPort->property("text").toString()=="") {
+            if (remoteHost->property("text").toString() == ""||remotePort->property("text").toString() == ""||localPort->property("text").toString() == "") {
                 ShowError();
                 return;
             }
             server=new TcpServer(TcpServer::PipeServer,remoteHost->property("text").toString(),remotePort->property("text").toString().toUShort(),password->property("text").toString(),this);
         } else if (tap->property("checked").toBool()) {
-            if (remoteHost->property("text").toString()==""||remotePort->property("text").toString()==""||localPort->property("text").toString()=="") {
+            if (remoteHost->property("text").toString() == ""||remotePort->property("text").toString() == ""||localPort->property("text").toString() == "") {
                 ShowError();
                 return;
             }
             server=new TcpServer(TcpServer::TapClient,remoteHost->property("text").toString(),remotePort->property("text").toString().toUShort(),password->property("text").toString(),this);
         }
-        if (!server->listen(QHostAddress::Any,localPort->property("text").toString().toUInt())) {
+        if(!server->listen(QHostAddress::Any,localPort->property("text").toString().toUInt())) {
             QMetaObject::invokeMethod(window,"showFailedBind");
             server->deleteLater();
             server=NULL;
@@ -157,7 +157,7 @@ void MainForm::startClicked() {
         settings->setValue("localport",localPort->property("text").toString());
         settings->setValue("password",password->property("text").toString());
         settings->endGroup();
-    } else if (start->property("text")=="Stop") {
+    } else if (start->property("text") == "Stop") {
         server->close();
         server->deleteLater();
         server=NULL;
@@ -177,9 +177,9 @@ void MainForm::startClicked() {
 }
 
 void MainForm::dumpClicked() {
-    if (dump->property("text")=="Dump") {
+    if (dump->property("text") == "Dump") {
         QMetaObject::invokeMethod(window,"showFileDialog");
-    } else if (dump->property("text")=="Undump") {
+    } else if (dump->property("text") == "Undump") {
         Log::undump();
         dump->setProperty("text","Dump");
     }

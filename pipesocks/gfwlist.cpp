@@ -34,7 +34,7 @@ GFWList::GFWList(QObject *parent):QObject(parent) {
 void GFWList::RequestGFWList() {
     if (available)
         emit RecvGFWList(PAC);
-    else if (!retrieving)
+    else if(!retrieving)
         timeout();
 }
 
@@ -47,7 +47,7 @@ void GFWList::ProcessGFWList(QNetworkReply *reply) {
     retrieving=false;
     if (reply->error()!=QNetworkReply::NoError) {
         Log::log("GFWList not retrieved");
-        if (!available)
+        if(!available)
             emit Fail();
         return;
     }
@@ -57,20 +57,20 @@ void GFWList::ProcessGFWList(QNetworkReply *reply) {
         QString tmp=it.i->t();
         if (tmp=="")
             continue;
-        if (tmp[0]=='@') {
+        if (tmp[0] == '@') {
             tmp=tmp.mid(2);
-            if (tmp[0]=='|') {
+            if (tmp[0] == '|') {
                 tmp.replace('.',"\\.");
                 tmp.replace('/',"\\/");
-                if (tmp[1]=='|') {
+                if (tmp[1] == '|') {
                     PAC+=QString("if(/(?:^|\\.)%1$/.test(host))return\"DIRECT\";").arg(tmp.mid(2));
                 } else {
                     PAC+=QString("if(/^%1/.test(url))return\"DIRECT\";").arg(tmp.mid(1));
                 }
-            } else if (tmp[0]=='/') {
+            } else if (tmp[0] == '/') {
                 PAC+=QString("if(%1.test(url))return\"DIRECT\";").arg(tmp);
             } else {
-                PAC+=QString("if(scheme===\"http\"&&url.indexOf(\"%1\")>=0)return\"DIRECT\";").arg(tmp);
+                PAC+=QString("if(scheme= == \"http\"&&url.indexOf(\"%1\")>=0)return\"DIRECT\";").arg(tmp);
             }
         }
     }
@@ -79,18 +79,18 @@ void GFWList::ProcessGFWList(QNetworkReply *reply) {
         if (tmp=="")
             continue;
         if (tmp[0]!='!'&&tmp[0]!='@'&&tmp[0]!='[') {
-            if (tmp[0]=='|') {
+            if (tmp[0] == '|') {
                 tmp.replace('.',"\\.");
                 tmp.replace('/',"\\/");
-                if (tmp[1]=='|') {
+                if (tmp[1] == '|') {
                     PAC+=QString("if(/(?:^|\\.)%1$/.test(host))return\"SOCKS5 %2:%3;SOCKS %2:%3\";").arg(tmp.mid(2));
                 } else {
                     PAC+=QString("if(/^%1/.test(url))return\"SOCKS5 %2:%3;SOCKS %2:%3\";").arg(tmp.mid(1));
                 }
-            } else if (tmp[0]=='/') {
+            } else if (tmp[0] == '/') {
                 PAC+=QString("if(%1.test(url))return\"SOCKS5 %2:%3;SOCKS %2:%3\";").arg(tmp);
             } else {
-                PAC+=QString("if(scheme===\"http\"&&url.indexOf(\"%1\")>=0)return\"SOCKS5 %2:%3;SOCKS %2:%3\";").arg(tmp);
+                PAC+=QString("if(scheme= == \"http\"&&url.indexOf(\"%1\")>=0)return\"SOCKS5 %2:%3;SOCKS %2:%3\";").arg(tmp);
             }
         }
     }
