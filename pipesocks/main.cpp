@@ -68,7 +68,6 @@ int main(int argc, char **argv)
         {
           server = new TcpServer(TcpServer::PumpServer,remoteHost,remotePort,password);
           printf("Welcome to Pipesocks pump\nServer is listening at port %d\n",localPort);
-          break;
         }
       else if(type == "pipe")
         {
@@ -79,7 +78,6 @@ int main(int argc, char **argv)
             }
           server = new TcpServer(TcpServer::PipeServer,remoteHost,remotePort,password);
           printf("Welcome to Pipesocks pipe\nServer is listening at port %d and connects to %s:%d\n",localPort,remoteHost.toStdString().c_str(),remotePort);
-          break;
         }
       else if(type == "tap")
         {
@@ -90,7 +88,6 @@ int main(int argc, char **argv)
             }
           server = new TcpServer(TcpServer::TapClient,remoteHost,remotePort,password);
           printf("Welcome to Pipesocks tap\nServer is listening at port %d and connects to %s:%d\n",localPort,remoteHost.toStdString().c_str(),remotePort);
-          break;
         }
       else
         {
@@ -100,7 +97,7 @@ int main(int argc, char **argv)
 
       if(!server->listen(QHostAddress::Any,localPort))
         {
-          printf("Failed to bind to port %d, exiting. . . \n",localPort);
+          printf("Failed to bind to port %d, exiting... \n",localPort);
           return 1;
         }
       return a.exec();
