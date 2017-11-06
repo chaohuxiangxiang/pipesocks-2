@@ -83,13 +83,13 @@ void Tap::ClientRecv(const QByteArray &Data) {
             qvm.insert("password",Password);
             qvm.insert("version",Version::GetLowestVersion());
             if (Data[1]==1) {
-                qvm.insert("protocol",  "TCP");
+                qvm.insert("protocol", "TCP");
                 Log::log(csock,"requested TCP connection to "+hostport.first+':'+QString::number(hostport.second));
             } else if (Data[1]==3) {
-                qvm.insert("protocol",  "UDP");
+                qvm.insert("protocol", "UDP");
                 Log::log(csock,"requested UDP association");
             }
-            qvm.insert("garbage",QString(randombytes_uniform(900),  'f'));
+            qvm.insert("garbage",QString(randombytes_uniform(900), 'f'));
             emit ssock->SendData(QJsonDocument::fromVariant(qvm).toJson());
             break;
         }

@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "pump.h"
 
-Pump::Pump(qintptr handle, const QString &Password, QObject *parent)
+Pump::Pump(qintptr handle,const QString &Password,QObject *parent)
   : QObject(parent)
   , Password(Password)
 {
@@ -44,7 +44,7 @@ void Pump::ClientRecv(const QByteArray &Data)
           if((!Version::CheckVersion(qvm["version"].toString()))
              ||qvm["password"] != Password)
             {
-              qvm2.insert("status",  "no");
+              qvm2.insert("status", "no");
               emit csock->SendData(QJsonDocument::fromVariant(qvm2).toJson());
               csock->disconnectFromHost();
               Log::log(csock,"was refused");
@@ -67,9 +67,9 @@ void Pump::ClientRecv(const QByteArray &Data)
               status = UDP;
               Log::log(csock,"requested UDP association");
             }
-          qvm2.insert("status",  "ok");
+          qvm2.insert("status", "ok");
           qvm2.insert("protocol",qvm["protocol"].toString());
-          qvm2.insert("garbage",QString(randombytes_uniform(900),  'f'));
+          qvm2.insert("garbage",QString(randombytes_uniform(900), 'f'));
           emit csock->SendData(QJsonDocument::fromVariant(qvm2).toJson());
           break;
         }
