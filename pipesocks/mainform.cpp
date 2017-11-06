@@ -36,8 +36,8 @@ MainForm::MainForm(QObject *rootObject,QObject *parent)
     dump = pipesocks->findChild<QObject*>("dump");
     info = about->findChild<QObject*>("info");
     server = NULL;
-    headerText->setProperty("text","pipesocks "+Version::GetHighestVersion());
-    info->setProperty("text","pipesocks "+Version::GetHighestVersion()+"\nCopyright (C) 2017  yvbbrjdr\nIcon by Rena\nQt by The Qt Company Ltd.\nlibsodium by jedisct1\nLicensed by GPL v3");
+    headerText->setProperty("text",  "pipesocks "+Version::GetHighestVersion());
+    info->setProperty("text",  "pipesocks "+Version::GetHighestVersion()+"\nCopyright (C) 2017  yvbbrjdr\nIcon by Rena\nQt by The Qt Company Ltd.\nlibsodium by jedisct1\nLicensed by GPL v3");
     connect(pump,SIGNAL(clicked()),this,SLOT(pumpClicked()));
     connect(pipe,SIGNAL(clicked()),this,SLOT(pipeClicked()));
     connect(tap,SIGNAL(clicked()),this,SLOT(tapClicked()));
@@ -53,7 +53,7 @@ MainForm::MainForm(QObject *rootObject,QObject *parent)
     if (QSysInfo::macVersion() == QSysInfo::MV_None) {
         window->setProperty("color",QColor(48,48,48));
     }
-    settings = new QSettings("yvbbrjdr","pipesocks",this);
+    settings = new QSettings("yvbbrjdr",  "pipesocks",this);
     if (settings->contains("pipesocks/version")&&Version::CheckVersion(settings->value("pipesocks/version").toString())) {
         settings->beginGroup("default");
         QString type(settings->value("type").toString());
@@ -121,7 +121,11 @@ void MainForm::startClicked()
               ShowError();
               return;
             }
-          server = new TcpServer(TcpServer::PumpServer,remoteHost->property("text").toString(),remotePort->property("text").toString().toUShort(),password->property("text").toString(),this);
+          server = new TcpServer(TcpServer::PumpServer,
+                                 remoteHost->property("text").toString(),
+                                 remotePort->property("text").toString().toUShort(),
+                                 password->property("text").toString(),
+                                 this);
         }
       else if (pipe->property("checked").toBool())
         {
@@ -167,17 +171,17 @@ void MainForm::startClicked()
       remotePort->setProperty("enabled",false);
       localPort->setProperty("enabled",false);
       password->setProperty("enabled",false);
-      start->setProperty("text","Stop");
-      headerText->setProperty("text","Enjoy!");
+      start->setProperty("text",  "Stop");
+      headerText->setProperty("text",  "Enjoy!");
       settings->setValue("pipesocks/version",Version::GetHighestVersion());
       settings->beginGroup("default");
 
       if (pump->property("checked").toBool())
-          settings->setValue("type","pump");
+          settings->setValue("type",  "pump");
       else if (pipe->property("checked").toBool())
-          settings->setValue("type","pipe");
+          settings->setValue("type",  "pipe");
       else if (tap->property("checked").toBool())
-          settings->setValue("type","tap");
+          settings->setValue("type",  "tap");
 
       settings->setValue("remotehost",remoteHost->property("text").toString());
       settings->setValue("remoteport",remotePort->property("text").toString());
@@ -201,8 +205,8 @@ void MainForm::startClicked()
       else if (tap->property("checked").toBool())
           tapClicked();
 
-      start->setProperty("text","Start");
-      headerText->setProperty("text","pipesocks "+Version::GetHighestVersion());
+      start->setProperty("text",  "Start");
+      headerText->setProperty("text",  "pipesocks "+Version::GetHighestVersion());
     }
 }
 
@@ -215,7 +219,7 @@ void MainForm::dumpClicked()
   else if (dump->property("text") == "Undump")
     {
       Log::undump();
-      dump->setProperty("text","Dump");
+      dump->setProperty("text",  "Dump");
     }
 }
 
@@ -225,7 +229,7 @@ void MainForm::ShowError() {
 
 void MainForm::fileChosen(QUrl path) {
     Log::dump(path.toLocalFile());
-    dump->setProperty("text","Undump");
+    dump->setProperty("text",  "Undump");
 }
 
 void MainForm::windowStateChanged(Qt::WindowState state)

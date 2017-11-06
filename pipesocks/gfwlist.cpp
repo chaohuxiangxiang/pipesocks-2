@@ -60,8 +60,8 @@ void GFWList::ProcessGFWList(QNetworkReply *reply) {
         if (tmp[0] == '@') {
             tmp=tmp.mid(2);
             if (tmp[0] == '|') {
-                tmp.replace('.',"\\.");
-                tmp.replace('/',"\\/");
+                tmp.replace('.',  "\\.");
+                tmp.replace('/',  "\\/");
                 if (tmp[1] == '|') {
                     PAC+=QString("if(/(?:^|\\.)%1$/.test(host))return\"DIRECT\";").arg(tmp.mid(2));
                 } else {
@@ -80,8 +80,8 @@ void GFWList::ProcessGFWList(QNetworkReply *reply) {
             continue;
         if (tmp[0]!='!'&&tmp[0]!='@'&&tmp[0]!='[') {
             if (tmp[0] == '|') {
-                tmp.replace('.',"\\.");
-                tmp.replace('/',"\\/");
+                tmp.replace('.',  "\\.");
+                tmp.replace('/',  "\\/");
                 if (tmp[1] == '|') {
                     PAC+=QString("if(/(?:^|\\.)%1$/.test(host))return\"SOCKS5 %2:%3;SOCKS %2:%3\";").arg(tmp.mid(2));
                 } else {

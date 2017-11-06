@@ -46,7 +46,7 @@ int main(int argc, char **argv)
       QQuickStyle::setStyle("Material");
       QQmlApplicationEngine engine;
       engine.load(QUrl(QLatin1String("qrc:/Main.qml")));
-      new MainForm(engine.rootObjects().value(0), &a);
+      new MainForm(engine.rootObjects().value(0),   &a);
       return a.exec();
     }
   else

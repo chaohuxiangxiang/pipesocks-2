@@ -43,7 +43,7 @@ void UdpSocket::RecvDataSlot() {
         QHostAddress Host;
         unsigned short Port;
         QByteArray Data(pendingDatagramSize(),0);
-        readDatagram(Data.data(),pendingDatagramSize(), &Host,&Port);
+        readDatagram(Data.data(),pendingDatagramSize(),  &Host,&Port);
         emit RecvData(Host,Port,Data);
     }
 }
