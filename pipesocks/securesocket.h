@@ -28,6 +28,7 @@ class SecureSocket : public TcpSocket {
     Q_OBJECT
 public:
     explicit SecureSocket(const QString &Password,bool passive,QObject *parent = 0);
+
 private:
     bool passive;
     QByteArray LocalPubKey,LocalPriKey,RemotePubKey,SecretKey;
@@ -40,6 +41,7 @@ private:
     void SendEncrypted(const QByteArray &Data);
     void SendPubKey();
     void SendUnencrypted(const QByteArray &Data);
+
 private slots:
     void StateChangedSlot(QAbstractSocket::SocketState state);
     void SendDataSlot(const QByteArray &Data);
