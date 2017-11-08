@@ -24,15 +24,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <QNetworkProxy>
 
 class UdpSocket : public QUdpSocket {
-    Q_OBJECT
+  Q_OBJECT
 public:
-    explicit UdpSocket(QObject *parent = 0);
+  explicit UdpSocket(QObject *parent = 0);
 signals:
-    void SendData(const QString &Host,unsigned short Port,const QByteArray &Data);
-    void RecvData(const QHostAddress &Host,unsigned short Port,const QByteArray &Data);
+  void sendData(const QString &Host,unsigned short Port,const QByteArray &Data);
+  void recvData(const QHostAddress &Host,unsigned short Port,const QByteArray &Data);
 private slots:
-    void SendDataSlot(const QString &Host,unsigned short Port,const QByteArray &Data);
-    void RecvDataSlot();
+  void sendDataSlot(const QString &Host,unsigned short Port,const QByteArray &Data);
+  void recvDataSlot();
 };
 
 #endif // UDPSOCKET_H

@@ -21,22 +21,22 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 FILE* Log::fp=stdout;
 
 void Log::log(const QString &message) {
-    fprintf(fp,"[%s] %s\n",QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss").toLocal8Bit().data(),message.toLocal8Bit().data());
-    fflush(fp);
+  fprintf(fp,"[%s] %s\n",QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss").toLocal8Bit().data(),message.toLocal8Bit().data());
+  fflush(fp);
 }
 
 void Log::log(const QAbstractSocket *socket,const QString &message) {
-    log(socket->peerAddress().toString().mid(7)+':'+QString::number(socket->peerPort())+' '+message);
+  log(socket->peerAddress().toString().mid(7)+':'+QString::number(socket->peerPort())+' '+message);
 }
 
 void Log::dump(const QString &path) {
-    fp=fopen(path.toLocal8Bit().data(), "w");
-    if(!fp)
-        fp=stdout;
+  fp=fopen(path.toLocal8Bit().data(), "w");
+  if(!fp)
+    fp=stdout;
 }
 
 void Log::undump() {
-    fflush(fp);
-    fclose(fp);
-    fp=stdout;
+  fflush(fp);
+  fclose(fp);
+  fp=stdout;
 }

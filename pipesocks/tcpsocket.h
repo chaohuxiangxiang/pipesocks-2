@@ -23,15 +23,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <QNetworkProxy>
 
 class TcpSocket : public QTcpSocket {
-    Q_OBJECT
+  Q_OBJECT
 public:
-    explicit TcpSocket(QObject *parent = 0);
+  explicit TcpSocket(QObject *parent = 0);
 signals:
-    void SendData(const QByteArray &Data);
-    void RecvData(const QByteArray &Data);
+  void sendData(const QByteArray &Data);
+  void recvData(const QByteArray &Data);
 private slots:
-    virtual void SendDataSlot(const QByteArray &Data);
-    virtual void RecvDataSlot();
+  virtual void sendDataSlot(const QByteArray &Data);
+  virtual void recvDataSlot();
 };
 
 #endif // TCPSOCKET_H

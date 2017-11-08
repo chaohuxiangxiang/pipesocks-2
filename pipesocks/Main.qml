@@ -23,6 +23,7 @@ import QtQuick.Dialogs 1.2 as Dialogs
 import QtQuick.Controls.Material 2.0
 
 ApplicationWindow {
+//    flags: Qt.WindowStaysOnTopHint | Qt.Dialog
     width: 324
     height: 400
     minimumHeight: 400

@@ -24,10 +24,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "mainform.h"
 
 QString findArg(const QStringList &argList, char letter) {
-    int index = argList.indexOf(QString('-') + letter);
-    if(index != -1 && index < argList.size() - 1)
-        return argList.at(index + 1);
-    return QString();
+  int index = argList.indexOf(QString('-') + letter);
+  if(index != -1 && index < argList.size() - 1)
+    return argList.at(index + 1);
+  return QString();
 }
 
 int main(int argc, char **argv)

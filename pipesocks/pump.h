@@ -31,27 +31,27 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "log.h"
 
 class Pump : public QObject {
-    Q_OBJECT
+  Q_OBJECT
 public:
-    explicit Pump(qintptr handle,const QString &Password,QObject *parent = 0);
+  explicit Pump(qintptr handle,const QString &Password,QObject *parent = 0);
 private:
-    enum Status {
-        Initiated,
-        TCP,
-        UDP
-    };
-    QString Password;
-    Status status;
-    SecureSocket *csock;
-    TcpSocket *ssock;
-    UdpSocket *usock;
-    QHostAddress CHost;
-    unsigned short CPort;
+  enum Status {
+    Initiated,
+    TCP,
+    UDP
+  };
+  QString Password;
+  Status status;
+  SecureSocket *csock;
+  TcpSocket *ssock;
+  UdpSocket *usock;
+  QHostAddress CHost;
+  unsigned short CPort;
 private slots:
-    void ClientRecv(const QByteArray &Data);
-    void ServerRecv(const QByteArray &Data);
-    void UDPRecv(const QHostAddress &Host,unsigned short Port,const QByteArray &Data);
-    void EndSession();
+  void clientRecv(const QByteArray &Data);
+  void serverRecv(const QByteArray &Data);
+  void udpRecv(const QHostAddress &Host,unsigned short Port,const QByteArray &Data);
+  void endSession();
 };
 
 #endif // PUMP_H

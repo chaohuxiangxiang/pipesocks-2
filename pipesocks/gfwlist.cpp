@@ -20,82 +20,90 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 const QString GFWList::GFWListAddress("https://raw.githubusercontent.com/gfwlist/gfwlist/master/gfwlist.txt");
 
-GFWList::GFWList(QObject *parent):QObject(parent) {
-    retrieving=available=false;
-    timer=new QTimer(this);
-    nam=new QNetworkAccessManager(this);
-    nam->setProxy(QNetworkProxy::NoProxy);
-    connect(timer,SIGNAL(timeout()),this,SLOT(timeout()));
-    connect(nam,SIGNAL(finished(QNetworkReply*)),this,SLOT(ProcessGFWList(QNetworkReply*)));
-    timer->start(3600000);
+GFWList::GFWList(QObject *parent)
+  : QObject(parent)
+{
+  retrieving = available = false;
+  timer = new QTimer(this);
+  nam = new QNetworkAccessManager(this);
+  nam->setProxy(QNetworkProxy::NoProxy);
+  connect(timer,SIGNAL(timeout()),
+          this,SLOT(timeout()));
+  connect(nam,SIGNAL(finished(QNetworkReply*)),
+          this,SLOT(processGFWList(QNetworkReply*)));
+  timer->start(3600000);
+  timeout();
+}
+
+void GFWList::requestGFWList()
+{
+  if (available)
+    emit recvGFWList(PAC);
+  else if(!retrieving)
     timeout();
 }
 
-void GFWList::RequestGFWList() {
-    if (available)
-        emit RecvGFWList(PAC);
-    else if(!retrieving)
-        timeout();
+void GFWList::timeout()
+{
+  retrieving = true;
+  nam->get(QNetworkRequest(QUrl(GFWListAddress)));
 }
 
-void GFWList::timeout() {
-    retrieving=true;
-    nam->get(QNetworkRequest(QUrl(GFWListAddress)));
-}
-
-void GFWList::ProcessGFWList(QNetworkReply *reply) {
-    retrieving=false;
-    if (reply->error()!=QNetworkReply::NoError) {
-        Log::log("GFWList not retrieved");
-        if(!available)
-            emit Fail();
-        return;
+void GFWList::processGFWList(QNetworkReply *reply)
+{
+  retrieving = false;
+  if (reply->error() != QNetworkReply::NoError)
+    {
+      Log::log("GFWList not retrieved");
+      if(!available)
+        emit fail();
+      return;
     }
-    QStringList list(QString(QByteArray::fromBase64(reply->readAll())).split('\n'));
-    PAC="function FindProxyForURL(url,host){var scheme=url.substr(0,url.indexOf(\":\"));";
-    for (QStringList::iterator it=list.begin();it!=list.end();++it) {
-        QString tmp=it.i->t();
-        if (tmp=="")
-            continue;
-        if (tmp[0] == '@') {
-            tmp=tmp.mid(2);
-            if (tmp[0] == '|') {
-                tmp.replace('.',"\\.");
-                tmp.replace('/',"\\/");
-                if (tmp[1] == '|') {
-                    PAC+=QString("if(/(?:^|\\.)%1$/.test(host))return\"DIRECT\";").arg(tmp.mid(2));
+  QStringList list(QString(QByteArray::fromBase64(reply->readAll())).split('\n'));
+  PAC = "function FindProxyForURL(url,host){var scheme = url.substr(0,url.indexOf(\":\"));";
+  for (QStringList::iterator it = list.begin();it != list.end();++it) {
+      QString tmp = it.i->t();
+      if (tmp == "")
+        continue;
+      if (tmp[0]  ==  '@') {
+          tmp = tmp.mid(2);
+          if (tmp[0]  ==  '|') {
+              tmp.replace('.',"\\.");
+              tmp.replace('/',"\\/");
+              if (tmp[1]  ==  '|') {
+                  PAC += QString("if(/(?:^|\\.)%1$/.test(host))return\"DIRECT\";").arg(tmp.mid(2));
                 } else {
-                    PAC+=QString("if(/^%1/.test(url))return\"DIRECT\";").arg(tmp.mid(1));
+                  PAC += QString("if(/^%1/.test(url))return\"DIRECT\";").arg(tmp.mid(1));
                 }
-            } else if (tmp[0] == '/') {
-                PAC+=QString("if(%1.test(url))return\"DIRECT\";").arg(tmp);
+            } else if (tmp[0]  ==  '/') {
+              PAC += QString("if(%1.test(url))return\"DIRECT\";").arg(tmp);
             } else {
-                PAC+=QString("if(scheme= == \"http\"&&url.indexOf(\"%1\")>=0)return\"DIRECT\";").arg(tmp);
+              PAC += QString("if(scheme =   ==  \"http\"&&url.indexOf(\"%1\")> = 0)return\"DIRECT\";").arg(tmp);
             }
         }
     }
-    for (QStringList::iterator it=list.begin();it!=list.end();++it) {
-        QString tmp=it.i->t();
-        if (tmp=="")
-            continue;
-        if (tmp[0]!='!'&&tmp[0]!='@'&&tmp[0]!='[') {
-            if (tmp[0] == '|') {
-                tmp.replace('.',"\\.");
-                tmp.replace('/',"\\/");
-                if (tmp[1] == '|') {
-                    PAC+=QString("if(/(?:^|\\.)%1$/.test(host))return\"SOCKS5 %2:%3;SOCKS %2:%3\";").arg(tmp.mid(2));
+  for (QStringList::iterator it = list.begin();it != list.end();++it) {
+      QString tmp = it.i->t();
+      if (tmp == "")
+        continue;
+      if (tmp[0] != '!'&&tmp[0] != '@'&&tmp[0] != '[') {
+          if (tmp[0]  ==  '|') {
+              tmp.replace('.',"\\.");
+              tmp.replace('/',"\\/");
+              if (tmp[1]  ==  '|') {
+                  PAC += QString("if(/(?:^|\\.)%1$/.test(host))return\"SOCKS5 %2:%3;SOCKS %2:%3\";").arg(tmp.mid(2));
                 } else {
-                    PAC+=QString("if(/^%1/.test(url))return\"SOCKS5 %2:%3;SOCKS %2:%3\";").arg(tmp.mid(1));
+                  PAC += QString("if(/^%1/.test(url))return\"SOCKS5 %2:%3;SOCKS %2:%3\";").arg(tmp.mid(1));
                 }
-            } else if (tmp[0] == '/') {
-                PAC+=QString("if(%1.test(url))return\"SOCKS5 %2:%3;SOCKS %2:%3\";").arg(tmp);
+            } else if (tmp[0]  ==  '/') {
+              PAC += QString("if(%1.test(url))return\"SOCKS5 %2:%3;SOCKS %2:%3\";").arg(tmp);
             } else {
-                PAC+=QString("if(scheme= == \"http\"&&url.indexOf(\"%1\")>=0)return\"SOCKS5 %2:%3;SOCKS %2:%3\";").arg(tmp);
+              PAC += QString("if(scheme =   ==  \"http\"&&url.indexOf(\"%1\")> = 0)return\"SOCKS5 %2:%3;SOCKS %2:%3\";").arg(tmp);
             }
         }
     }
-    PAC+="return\"DIRECT;SOCKS5 %2:%3;SOCKS %2:%3\";}";
-    available=true;
-    Log::log("GFWList retrieved");
-    emit RecvGFWList(PAC);
+  PAC += "return\"DIRECT;SOCKS5 %2:%3;SOCKS %2:%3\";}";
+  available = true;
+  Log::log("GFWList retrieved");
+  emit recvGFWList(PAC);
 }

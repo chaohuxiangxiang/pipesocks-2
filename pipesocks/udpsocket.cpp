@@ -19,31 +19,31 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "udpsocket.h"
 
 UdpSocket::UdpSocket(QObject *parent):QUdpSocket(parent) {
-    setProxy(QNetworkProxy::NoProxy);
-    connect(this,SIGNAL(readyRead()),this,SLOT(RecvDataSlot()));
-    connect(this,SIGNAL(SendData(QString,unsigned short,QByteArray)),this,SLOT(SendDataSlot(QString,unsigned short,QByteArray)));
-    bind();
+  setProxy(QNetworkProxy::NoProxy);
+  connect(this,SIGNAL(readyRead()),this,SLOT(recvDataSlot()));
+  connect(this,SIGNAL(sendData(QString,unsigned short,QByteArray)),this,SLOT(sendDataSlot(QString,unsigned short,QByteArray)));
+  bind();
 }
 
-void UdpSocket::SendDataSlot(const QString &Host,unsigned short Port,const QByteArray &Data) {
-    QHostAddress HostAddress(Host);
-    if (HostAddress.protocol()==QAbstractSocket::UnknownNetworkLayerProtocol) {
-        QHostInfo qhi(QHostInfo::fromName(Host));
-        if (qhi.error()==QHostInfo::NoError) {
-            HostAddress=qhi.addresses().first();
+void UdpSocket::sendDataSlot(const QString &Host,unsigned short Port,const QByteArray &Data) {
+  QHostAddress HostAddress(Host);
+  if (HostAddress.protocol()==QAbstractSocket::UnknownNetworkLayerProtocol) {
+      QHostInfo qhi(QHostInfo::fromName(Host));
+      if (qhi.error()==QHostInfo::NoError) {
+          HostAddress=qhi.addresses().first();
         } else {
-            return;
+          return;
         }
     }
-    writeDatagram(Data,HostAddress,Port);
+  writeDatagram(Data,HostAddress,Port);
 }
 
-void UdpSocket::RecvDataSlot() {
-    while (hasPendingDatagrams()) {
-        QHostAddress Host;
-        unsigned short Port;
-        QByteArray Data(pendingDatagramSize(),0);
-        readDatagram(Data.data(),pendingDatagramSize(), &Host,&Port);
-        emit RecvData(Host,Port,Data);
+void UdpSocket::recvDataSlot() {
+  while (hasPendingDatagrams()) {
+      QHostAddress Host;
+      unsigned short Port;
+      QByteArray Data(pendingDatagramSize(),0);
+      readDatagram(Data.data(),pendingDatagramSize(), &Host,&Port);
+      emit recvData(Host,Port,Data);
     }
 }

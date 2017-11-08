@@ -34,34 +34,39 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "log.h"
 
 class Tap : public QObject {
-    Q_OBJECT
+  Q_OBJECT
 public:
-    explicit Tap(qintptr handle,const QString &RemoteHost,unsigned short RemotePort,const QString &Password,GFWList *gfwlist,QObject *parent = 0);
+  explicit Tap(qintptr handle,
+               const QString &RemoteHost,
+               unsigned short RemotePort,
+               const QString &Password,
+               GFWList *gfwlist,
+               QObject *parent = 0);
 private:
-    enum Status {
-        Initiated,
-        Handshook,
-        CONNECT,
-        UDPASSOCIATE
-    };
-    QString Password;
-    GFWList *gfwlist;
-    Status status;
-    TcpSocket *csock;
-    SecureSocket *ssock;
-    UdpSocket *usock;
-    QHostAddress UHost,CHost;
-    unsigned short UPort,CPort;
-    QByteArray PAC();
-    QPair<QString,unsigned short>toNormal(const QByteArray &SOCKS5);
-    QByteArray toSOCKS5(const QHostAddress &Host,unsigned short Port);
+  enum Status {
+    Initiated,
+    Handshook,
+    CONNECT,
+    UDPASSOCIATE
+  };
+  QString Password;
+  GFWList *gfwlist;
+  Status status;
+  TcpSocket *csock;
+  SecureSocket *ssock;
+  UdpSocket *usock;
+  QHostAddress UHost,CHost;
+  unsigned short UPort,CPort;
+  QByteArray PAC();
+  QPair<QString,unsigned short> toNormal(const QByteArray &socks5);
+  QByteArray toSOCKS5(const QHostAddress &Host,unsigned short Port);
 private slots:
-    void ClientRecv(const QByteArray &Data);
-    void ServerRecv(const QByteArray &Data);
-    void UDPRecv(const QHostAddress&,unsigned short,const QByteArray &Data);
-    void EndSession();
-    void RecvGFWList(const QString &gfwlist);
-    void GFWListFail();
+  void clientRecv(const QByteArray &Data);
+  void serverRecv(const QByteArray &Data);
+  void udpRecv(const QHostAddress&host, unsigned short port, const QByteArray &data);
+  void endSession();
+  void recvGFWList(const QString &gfwlist);
+  void gfwListFail();
 };
 
 #endif // TAP_H

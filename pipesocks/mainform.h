@@ -28,28 +28,31 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "version.h"
 #include "tcpserver.h"
 
-class MainForm : public QObject {
-    Q_OBJECT
+class MainForm : public QObject
+{
+  Q_OBJECT
 public:
-    explicit MainForm(QObject *rootObject,QObject *parent = 0);
-    ~MainForm();
+  explicit MainForm(QObject *rootObject,QObject *parent = 0);
+  ~MainForm();
+
 private:
-    QObject *window,*headerText,*pipesocks,*about,
-            *pump,*pipe,*tap,*remoteHost,
-            *remotePort,*localPort,*password,*start,
-            *dump,*info;
-    void ShowError();
-    TcpServer *server;
-    QSettings *settings;
-    QSystemTrayIcon *trayicon;
+  QObject *window,*headerText,*pipesocks,*about,
+  *pump,*pipe,*tap,*remoteHost,
+  *remotePort,*localPort,*password,*start,
+  *dump,*info;
+  void ShowError();
+  TcpServer *server;
+  QSettings *settings;
+  QSystemTrayIcon *trayicon;
+
 private slots:
-    void pumpClicked();
-    void pipeClicked();
-    void tapClicked();
-    void startClicked();
-    void dumpClicked();
-    void fileChosen(QUrl path);
-    void windowStateChanged(Qt::WindowState state);
+  void pumpClicked();
+  void pipeClicked();
+  void tapClicked();
+  void startClicked();
+  void dumpClicked();
+  void fileChosen(QUrl path);
+  void windowStateChanged(Qt::WindowState state);
 };
 
 #endif // MAINFORM_H

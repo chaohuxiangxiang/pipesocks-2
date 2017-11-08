@@ -26,17 +26,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "log.h"
 
 class Pipe : public QObject {
-    Q_OBJECT
+  Q_OBJECT
 public:
-    explicit Pipe(qintptr handle,const QString &RemoteHost,unsigned short RemotePort,QObject *parent = 0);
+  explicit Pipe(qintptr handle,const QString &RemoteHost,unsigned short RemotePort,QObject *parent = 0);
 private:
-    TcpSocket *csock,*ssock;
-    QHostAddress CHost;
-    unsigned short CPort;
+  TcpSocket *csock,*ssock;
+  QHostAddress CHost;
+  unsigned short CPort;
 private slots:
-    void ClientRecv(const QByteArray &Data);
-    void ServerRecv(const QByteArray &Data);
-    void EndSession();
+  void clientRecv(const QByteArray &Data);
+  void serverRecv(const QByteArray &Data);
+  void endSession();
 };
 
 #endif // PIPE_H

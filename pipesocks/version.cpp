@@ -20,14 +20,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 const QVector<QString>Version::ver(QVector<QString>()<<"2.3");//Change this line everytime you update
 
-QString Version::GetHighestVersion() {
-    return ver.last();
+QString Version::getHighestVersion() {
+  return ver.last();
 }
 
-QString Version::GetLowestVersion() {
-    return ver.first();
+QString Version::getLowestVersion() {
+  return ver.first();
 }
 
-bool Version::CheckVersion(const QString &version) {
-    return ver.contains(version);
+bool Version::checkVersion(const QString &version) {
+  return ver.contains(version);
 }

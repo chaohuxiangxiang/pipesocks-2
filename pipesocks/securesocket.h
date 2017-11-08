@@ -25,27 +25,30 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "tcpsocket.h"
 
 class SecureSocket : public TcpSocket {
-    Q_OBJECT
+  Q_OBJECT
 public:
-    explicit SecureSocket(const QString &Password,bool passive,QObject *parent = 0);
+  explicit SecureSocket(const QString &Password,bool passive,QObject *parent = 0);
 
 private:
-    bool passive;
-    QByteArray LocalPubKey,LocalPriKey,RemotePubKey,SecretKey;
-    QList<QByteArray>SendBuffer;
-    QByteArray RecvBuffer;
-    QByteArray PublicEncrypt(const QByteArray &Data);
-    QByteArray PublicDecrypt(const QByteArray &Data);
-    QByteArray SecretEncrypt(const QByteArray &Data);
-    QByteArray SecretDecrypt(const QByteArray &Data);
-    void SendEncrypted(const QByteArray &Data);
-    void SendPubKey();
-    void SendUnencrypted(const QByteArray &Data);
+  bool passive;
+  QByteArray local_pubKey;
+  QByteArray local_priKey;
+  QByteArray remote_pubKey;
+  QByteArray secret_key;
+  QList<QByteArray> send_buffer;
+  QByteArray recv_buffer;
+  QByteArray publicEncrypt(const QByteArray &Data);
+  QByteArray publicDecrypt(const QByteArray &Data);
+  QByteArray secretEncrypt(const QByteArray &Data);
+  QByteArray secretDecrypt(const QByteArray &Data);
+  void sendEncrypted(const QByteArray &Data);
+  void sendPubKey();
+  void sendUnencrypted(const QByteArray &Data);
 
 private slots:
-    void StateChangedSlot(QAbstractSocket::SocketState state);
-    void SendDataSlot(const QByteArray &Data);
-    void RecvDataSlot();
+  void stateChangedSlot(QAbstractSocket::SocketState state);
+  void sendDataSlot(const QByteArray &Data);
+  void recvDataSlot();
 };
 
 #endif // SECURESOCKET_H

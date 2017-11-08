@@ -25,7 +25,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <QDateTime>
 #include <cstdio>
 
-class Log {
+class Log
+{
 private:
     static FILE *fp;
 public:

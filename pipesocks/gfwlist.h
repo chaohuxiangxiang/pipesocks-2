@@ -27,23 +27,24 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <QNetworkProxy>
 #include "log.h"
 
-class GFWList : public QObject {
-    Q_OBJECT
+class GFWList : public QObject
+{
+  Q_OBJECT
 private:
-    static const QString GFWListAddress;
-    QTimer *timer;
-    QNetworkAccessManager *nam;
-    QString PAC;
-    bool available,retrieving;
+  static const QString GFWListAddress;
+  QTimer *timer;
+  QNetworkAccessManager *nam;
+  QString PAC;
+  bool available,retrieving;
 public:
-    explicit GFWList(QObject *parent = 0);
-    void RequestGFWList();
+  explicit GFWList(QObject *parent = 0);
+  void requestGFWList();
 signals:
-    void RecvGFWList(const QString &GFWList);
-    void Fail();
+  void recvGFWList(const QString &GFWList);
+  void fail();
 private slots:
-    void timeout();
-    void ProcessGFWList(QNetworkReply *reply);
+  void timeout();
+  void processGFWList(QNetworkReply *reply);
 };
 
 #endif // GFWLIST_H

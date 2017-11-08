@@ -26,22 +26,29 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "gfwlist.h"
 
 class TcpServer : public QTcpServer {
-    Q_OBJECT
+  Q_OBJECT
 public:
-    enum Mode {
-        PumpServer,
-        PipeServer,
-        TapClient
-    };
-    explicit TcpServer(Mode mode,const QString &RemoteHost,unsigned short RemotePort,const QString &Password,QObject *parent = 0);
+  enum Mode {
+    PumpServer,
+    PipeServer,
+    TapClient
+  };
+
+  explicit TcpServer(Mode mode,
+                     const QString &RemoteHost,
+                     unsigned short RemotePort,
+                     const QString &Password,
+                     QObject *parent = 0);
+
 private:
-    Mode mode;
-    QString RemoteHost;
-    unsigned short RemotePort;
-    QString Password;
-    GFWList *gfwlist;
+  Mode mode;
+  QString RemoteHost;
+  unsigned short RemotePort;
+  QString Password;
+  GFWList *gfwlist;
+
 protected:
-    void incomingConnection(qintptr handle);
+  void incomingConnection(qintptr handle);
 };
 
 #endif // TCPSERVER_H
